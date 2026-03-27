@@ -1,0 +1,152 @@
+{
+  "design_system": {
+    "identity": {
+      "name": "HealthGuard AI",
+      "tone": "Encouraging, Professional, Calming, Trustworthy",
+      "archetype": "Organic & Earthy (Refined for Medical)",
+      "theme_strategy": "Light Mode Default (Wellness focus)"
+    },
+    "typography": {
+      "font_family": {
+        "headings": "Manrope, sans-serif",
+        "body": "Inter, sans-serif",
+        "mono": "JetBrains Mono, monospace"
+      },
+      "scale": {
+        "h1": "text-4xl md:text-6xl font-bold tracking-tight",
+        "h2": "text-3xl md:text-4xl font-semibold tracking-tight",
+        "h3": "text-2xl font-semibold",
+        "body_lg": "text-lg leading-relaxed",
+        "body_base": "text-base leading-relaxed",
+        "caption": "text-sm text-muted-foreground"
+      }
+    },
+    "colors": {
+      "primary": {
+        "name": "Sage Teal",
+        "hex": "#2A9D8F",
+        "tailwind": "bg-[#2A9D8F] text-white hover:bg-[#21867a]"
+      },
+      "secondary": {
+        "name": "Warm Sand",
+        "hex": "#E9C46A",
+        "tailwind": "bg-[#E9C46A] text-black"
+      },
+      "accent": {
+        "name": "Soft Coral",
+        "hex": "#E76F51",
+        "tailwind": "bg-[#E76F51] text-white"
+      },
+      "background": {
+        "main": "#F8F9FA",
+        "card": "#FFFFFF",
+        "sidebar": "#FFFFFF"
+      },
+      "risk_levels": {
+        "low": "text-emerald-600 bg-emerald-50 border-emerald-200",
+        "medium": "text-amber-600 bg-amber-50 border-amber-200",
+        "high": "text-rose-600 bg-rose-50 border-rose-200"
+      }
+    },
+    "spacing": {
+      "container_padding": "p-6 md:p-12",
+      "section_gap": "gap-8 md:gap-16",
+      "card_padding": "p-6"
+    },
+    "visual_enhancers": {
+      "radius": "rounded-xl",
+      "shadows": {
+        "card": "shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:shadow-[0_8px_24px_rgba(0,0,0,0.08)] transition-shadow duration-300",
+        "float": "shadow-[0_12px_32px_rgba(42,157,143,0.15)]"
+      },
+      "glassmorphism": "bg-white/80 backdrop-blur-md border border-white/20",
+      "gradients": {
+        "hero": "bg-gradient-to-br from-[#F0F9F8] to-[#FFFBF0]",
+        "card_highlight": "bg-gradient-to-br from-white to-[#F8F9FA]"
+      }
+    }
+  },
+  "components": {
+    "buttons": {
+      "primary": "rounded-full px-8 py-3 font-semibold shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-0.5",
+      "secondary": "rounded-full px-8 py-3 font-medium border-2 border-[#2A9D8F] text-[#2A9D8F] hover:bg-[#2A9D8F]/5",
+      "ghost": "rounded-lg px-4 py-2 hover:bg-slate-100 text-slate-600"
+    },
+    "cards": {
+      "dashboard_metric": "bg-white rounded-2xl border border-slate-100 p-6 flex flex-col justify-between h-full",
+      "feature_card": "bg-white/50 hover:bg-white transition-colors p-8 rounded-2xl border border-slate-100"
+    },
+    "inputs": {
+      "default": "rounded-lg border-slate-200 focus:ring-2 focus:ring-[#2A9D8F]/20 focus:border-[#2A9D8F] transition-all bg-white/50"
+    }
+  },
+  "layout_strategies": {
+    "landing_page": {
+      "hero": "Split layout: Left text (H1 + CTA), Right image (Organic shape mask)",
+      "features": "Bento Grid (Mode A): Mix of large visuals and small text blocks",
+      "testimonials": "Horizontal scroll with large cards"
+    },
+    "dashboard": {
+      "structure": "Sidebar navigation (collapsible) + Main Content Area",
+      "grid": "Grid Mode B: High density but with generous padding inside cards",
+      "header": "Minimalist, greeting user, showing quick status"
+    },
+    "quiz": {
+      "structure": "Centered single-column layout, max-w-2xl",
+      "progress": "Top fixed progress bar, smooth transition",
+      "interaction": "One question per screen or grouped by category"
+    }
+  },
+  "assets": {
+    "images": {
+      "hero_main": {
+        "url": "https://images.unsplash.com/photo-1759503610767-4bb217fa45ed?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NTYxODl8MHwxfHNlYXJjaHwxfHx3ZWxsbmVzcyUyMGhhcHB5JTIwcGVyc29uJTIwbmF0dXJlfGVufDB8fHx8MTc3MTI1NjM2NHww&ixlib=rb-4.1.0&q=85",
+        "alt": "Happy women cycling in nature",
+        "usage": "Landing Page Hero"
+      },
+      "doctor_consult": {
+        "url": "https://images.unsplash.com/photo-1659353888096-cc5e333db5e0?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3MjQyMTd8MHwxfHNlYXJjaHw0fHxkb2N0b3IlMjBjb25zdWx0YXRpb24lMjBmcmllbmRseXxlbnwwfHx8fDE3NzEyNTYzNjh8MA&ixlib=rb-4.1.0&q=85",
+        "alt": "Doctor holding clipboard",
+        "usage": "Doctor Referral Section / About"
+      },
+      "healthy_food": {
+        "url": "https://images.unsplash.com/photo-1648775271007-435bb750fb1b?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA2MjJ8MHwxfHNlYXJjaHwxfHxoZWFsdGh5JTIwcGVyc29uJTIwbmF0dXJlfGVufDB8fHx8MTc3MTI1NjM3Mnww&ixlib=rb-4.1.0&q=85",
+        "alt": "Healthy salad and fruits",
+        "usage": "Dietary Recommendations"
+      },
+      "lab_test": {
+        "url": "https://images.unsplash.com/photo-1655210913810-33acfa96d1e6?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NTYxODl8MHwxfHNlYXJjaHwxfHxibG9vZCUyMHRlc3QlMjBraXQlMjBsYWJvcmF0b3J5fGVufDB8fHx8MTc3MTI1NjM3NHww&ixlib=rb-4.1.0&q=85",
+        "alt": "Laboratory equipment",
+        "usage": "Blood Test Upload Section"
+      }
+    },
+    "icons": {
+      "library": "lucide-react",
+      "style": "Stroke width 1.5px, rounded caps"
+    }
+  },
+  "universal_guidelines": [
+    "Do not use generic gradients. Use subtle, organic mesh gradients if needed.",
+    "Ensure all text has high contrast (WCAG AA).",
+    "Use 'sonner' for all toast notifications.",
+    "All interactive elements must have 'data-testid'.",
+    "Use 'Manrope' for headings and 'Inter' for body text.",
+    "Primary buttons should be pill-shaped (rounded-full).",
+    "Dashboard cards should have a subtle hover lift effect.",
+    "Avoid 'clinical' stark white; use warm off-whites for backgrounds."
+  ],
+  "instructions_to_main_agent": {
+    "setup": [
+      "Install 'lucide-react' for icons.",
+      "Install 'recharts' for data visualization (health history).",
+      "Install 'framer-motion' for smooth transitions.",
+      "Configure Tailwind with the custom colors provided."
+    ],
+    "implementation_order": [
+      "Setup Layouts (Landing, Auth, Dashboard Shell)",
+      "Build Components (Quiz Card, Risk Meter, Upload Form)",
+      "Integrate Pages (Home, Quiz, Results, History)",
+      "Add Polish (Animations, Toasts, Loading States)"
+    ]
+  }
+}
