@@ -1,36 +1,46 @@
-import os
-import resend
+import smtplib
 import asyncio
-from datetime import datetime
+import os
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 from typing import Dict
 
-# Initialize Resend
-resend.api_key = os.environ.get('RESEND_API_KEY', '')
-SENDER_EMAIL = os.environ.get('SENDER_EMAIL', 'onboarding@resend.dev')
-
 async def send_email_async(to_email: str, subject: str, html_content: str) -> bool:
-    """Send email asynchronously"""
-    if not resend.api_key:
-        print("⚠️ RESEND_API_KEY not configured - email not sent")
+    """Send email asynchronously via Gmail SMTP"""
+    GMAIL_USER = os.environ.get('GMAIL_USER', '')
+    GMAIL_APP_PASS = os.environ.get('GMAIL_APP_PASS', '')
+
+    if not GMAIL_USER or not GMAIL_APP_PASS:
+        print("⚠️ GMAIL_USER or GMAIL_APP_PASS not configured - email not sent")
         return False
-    
-    params = {
-        "from": SENDER_EMAIL,
-        "to": [to_email],
-        "subject": subject,
-        "html": html_content
-    }
-    
+
+    print(f"📧 Attempting email to {to_email} | subject: {subject}")
+
+    def _send():
+        msg = MIMEMultipart('alternative')
+        msg['Subject'] = subject
+        msg['From'] = f"HealthGuard AI <{GMAIL_USER}>"
+        msg['To'] = to_email
+        msg.attach(MIMEText(html_content, 'html'))
+        with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
+            smtp.login(GMAIL_USER, GMAIL_APP_PASS)
+            smtp.sendmail(GMAIL_USER, to_email, msg.as_string())
+
     try:
-        email = await asyncio.to_thread(resend.Emails.send, params)
-        print(f"✅ Email sent to {to_email}: {email.get('id')}")
+        await asyncio.to_thread(_send)
+        print(f"✅ Email sent to {to_email}")
         return True
-    except Exception as e:
-        print(f"❌ Failed to send email: {str(e)}")
+    except smtplib.SMTPAuthenticationError:
+        print("❌ Gmail auth failed - check GMAIL_USER and GMAIL_APP_PASS in .env")
         return False
+    except Exception as e:
+        print(f"❌ Email error: {str(e)}")
+        return False
+
 
 def generate_welcome_email(user_name: str) -> str:
     """Generate welcome email HTML"""
+    frontend_url = os.environ.get('FRONTEND_URL', 'http://localhost:3000')  # ✅ FIXED
     return f"""
     <!DOCTYPE html>
     <html>
@@ -60,12 +70,13 @@ def generate_welcome_email(user_name: str) -> str:
                     <li>Track your progress over time</li>
                 </ul>
                 <p><strong>Important Disclaimer:</strong> HealthGuard AI is an informational tool only. It does not replace professional medical advice, diagnosis, or treatment. Always consult with qualified healthcare providers for medical decisions.</p>
-                <a href="#" class="button">Start Your Assessment</a>
+                <a href="{frontend_url}/assessment" class="button">Start Your Assessment</a>
             </div>
         </div>
     </body>
     </html>
     """
+
 
 def generate_assessment_results_email(user_name: str, risk_level: str, diabetes_score: int, cholesterol_score: int) -> str:
     """Generate assessment results email"""
@@ -75,7 +86,7 @@ def generate_assessment_results_email(user_name: str, risk_level: str, diabetes_
         "High": "#ef4444"
     }
     color = risk_colors.get(risk_level, "#6b7280")
-    
+
     return f"""
     <!DOCTYPE html>
     <html>
@@ -114,6 +125,7 @@ def generate_assessment_results_email(user_name: str, risk_level: str, diabetes_
     </body>
     </html>
     """
+
 
 def generate_reminder_email(user_name: str, reminder_type: str = "blood_test") -> str:
     """Generate reminder email"""
@@ -155,41 +167,42 @@ def generate_reminder_email(user_name: str, reminder_type: str = "blood_test") -
     </html>
     """
 
-def generate_doctor_referral_email(user_name: str, blood_test_results: Dict) -> str:
-    """Generate doctor referral email"""
+
+def generate_doctor_referral_email(user_name: str, blood_test_results: Dict, risk_level: str = "High") -> str:
+    ldl = blood_test_results.get('ldl', 'N/A')
+    hdl = blood_test_results.get('hdl', 'N/A')
+    triglycerides = blood_test_results.get('triglycerides', 'N/A')
+    hba1c = blood_test_results.get('hba1c', 'N/A')
+
     return f"""
     <!DOCTYPE html>
     <html>
-    <head>
-        <style>
-            body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
-            .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
-            .header {{ background: #ef4444; color: white; padding: 30px; text-align: center; border-radius: 8px 8px 0 0; }}
-            .content {{ background: #f8f9fa; padding: 30px; }}
-            .urgent {{ background: #fee2e2; border: 2px solid #ef4444; padding: 20px; margin: 20px 0; border-radius: 8px; }}
-        </style>
-    </head>
-    <body>
-        <div class="container">
-            <div class="header">
-                <h1>⚠️ Urgent: Doctor Consultation Recommended</h1>
-            </div>
-            <div class="content">
-                <p>Hi {user_name},</p>
-                <div class="urgent">
-                    <strong>Your recent blood test results indicate values that require medical attention.</strong>
-                </div>
-                <p>We strongly recommend scheduling an appointment with a healthcare provider as soon as possible to discuss your results and create a treatment plan.</p>
-                <p><strong>Your Results:</strong></p>
-                <ul>
-                    <li>LDL: {blood_test_results.get('ldl', 'N/A')} mg/dL</li>
-                    <li>HDL: {blood_test_results.get('hdl', 'N/A')} mg/dL</li>
-                    <li>Triglycerides: {blood_test_results.get('triglycerides', 'N/A')} mg/dL</li>
-                    <li>HbA1c: {blood_test_results.get('hba1c', 'N/A')}%</li>
-                </ul>
-                <p><strong>Important:</strong> This is not a diagnosis. Only a qualified healthcare provider can interpret your results in the context of your complete medical history.</p>
-            </div>
+    <body style="font-family: Arial, sans-serif; color: #333;">
+      <div style="max-width:600px; margin:0 auto; padding:20px;">
+        <div style="background:#ef4444; color:white; padding:30px; text-align:center; border-radius:8px 8px 0 0;">
+          <h1>⚠️ Doctor Consultation Recommended</h1>
         </div>
+        <div style="background:#f8f9fa; padding:30px;">
+          <p>Hi {user_name},</p>
+          <div style="text-align:center; margin:20px 0;">
+            <span style="background:#ef4444; color:white; padding:10px 24px; border-radius:20px; font-weight:bold; font-size:16px;">
+              {risk_level} Risk
+            </span>
+          </div>
+          <div style="background:#fee2e2; border:2px solid #ef4444; padding:20px; margin:20px 0; border-radius:8px;">
+            <strong>Your blood test results indicate values that require medical attention.</strong>
+          </div>
+          <p>We strongly recommend scheduling an appointment with a healthcare provider as soon as possible.</p>
+          <p><strong>Your Results:</strong></p>
+          <ul>
+            <li>LDL: {ldl} mg/dL</li>
+            <li>HDL: {hdl} mg/dL</li>
+            <li>Triglycerides: {triglycerides} mg/dL</li>
+            <li>HbA1c: {hba1c}%</li>
+          </ul>
+          <p><em>This is not a diagnosis. Only a qualified healthcare provider can interpret your results.</em></p>
+        </div>
+      </div>
     </body>
     </html>
     """
